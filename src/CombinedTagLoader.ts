@@ -34,13 +34,19 @@ class CombinedTagLoader {
           componenModTag.content!
         );
       } else if (componenModTag.content) {
-        // Combine tag content from both files
-        const combinedStyleTagContent = componentSrcTag.content! + "\n" + componenModTag.content!;
-        // Replace tag content in component source file with combined content
-        this.componentSrcContent = this.componentSrcContent.replace(
-          componentSrcTag.content!,
-          combinedStyleTagContent
-        );        
+
+        if(componentSrcTag.content) {
+          // Combine tag content from both files
+          const combinedStyleTagContent = componentSrcTag.content! + "\n" + componenModTag.content!;
+          // Replace tag content in component source file with combined content
+          this.componentSrcContent = this.componentSrcContent.replace(
+            componentSrcTag.content!,
+            combinedStyleTagContent
+          );        
+        } else {
+          this.componentSrcContent = this.componentSrcContent + "\n" + componenModTag.fullTag;
+        }
+
       } 
     }
     return this.componentSrcContent;

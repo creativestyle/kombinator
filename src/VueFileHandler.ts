@@ -67,6 +67,10 @@ export class VueFileHandler {
     return  this.loadComponent(filenameIn);
   }
 
+  setNewFileContent(content: string) {
+    this.newFileContent = content;
+  }
+
   getFullPath():string | null {
     return this.filePath ? fs.realpathSync(this.filePath) : null;
   }
