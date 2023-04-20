@@ -30,6 +30,7 @@ function copyParentPlugin(options: CopyParentPluginOptions): Plugin {
         initialized = true;  
         if (fs.existsSync(path.join(options.destinationDir, '.git'))) {
           console.log(yellow(`.git exists in ${options.destinationDir}. Copy from parent skipped.`));
+          return;
         }
   
         for (let what of items) {
