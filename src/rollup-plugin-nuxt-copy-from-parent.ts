@@ -36,7 +36,6 @@ function copyParentPlugin(options: CopyParentPluginOptions): Plugin {
         for (let what of items) {
           let targetDir = path.join(options.destinationDir, what);
           let sourceDir = path.join(options.sourceDir, what);
-  
           try {
             fse.emptyDirSync(targetDir);
   
