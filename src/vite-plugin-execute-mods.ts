@@ -5,6 +5,7 @@ import { getWithComponent, TemplateMod } from './helpers';
 import { green, yellow } from 'colorette'
 import { VueFileHandler } from './VueFileHandler';
 import { VueCombinedTagLoader } from './VueCombinedTagLoader';
+import path from 'path';
 
 export interface ModsPluginOptions {
   modsDir: string;
@@ -97,7 +98,9 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
       }
     },
     async handleHotUpdate({ file, server }) {      
-      if (file.endsWith('.mod.ts') || file.endsWith('.mod.vue')) {
+      const parentComponentsPath = path.join(process.cwd(), options.componentsDir[1])
+      const fileIsParentComponent = file.startsWith(parentComponentsPath)
+      if (file.endsWith('.mod.ts') || file.endsWith('.mod.vue') || fileIsParentComponent) {
         emptyDirSync(options.componentsDir[0]);
         processVueMods(options.localComponentsDir);
         executeMods(withComponent, options.modsDir);
