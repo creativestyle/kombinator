@@ -3,8 +3,8 @@ import { readdirSync, lstatSync, realpathSync, readFileSync, unlinkSync, writeFi
 import { emptyDirSync, existsSync } from 'fs-extra';
 import { getWithComponent, TemplateMod } from './helpers';
 import { green, yellow } from 'colorette'
-import VueFileHandler from './VueFileHandler';
-import CombinedTagLoader from './CombinedTagLoader';
+import { VueFileHandler } from './VueFileHandler';
+import { VueCombinedTagLoader } from './VueCombinedTagLoader';
 
 export interface ModsPluginOptions {
   modsDir: string;
@@ -62,9 +62,9 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
           console.log(green(`Reading directory ${filePath}`))
         }
         processVueMods(filePath);
-      } else if (filePath.endsWith('.mod.vu')) {                
+      } else if (filePath.endsWith('.mod.vue')) {                
         const modFilePath = realpathSync(filePath);        
-        const componentFileName = filePath.replace('.mod.vu','.vue').replace(options.localComponentsDir,'');
+        const componentFileName = filePath.replace('.mod.vue','.vue').replace(options.localComponentsDir,'');
                 
         if(options.verbose) {
           console.log(green(`Processing ${modFilePath}`));
@@ -73,9 +73,9 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
         const fileHandler = new VueFileHandler(options.componentsDir).loadVueFile(componentFileName);
         const componentFilePath = fileHandler.getFullPath();
 
-        const newCode = new CombinedTagLoader().loadComponent(componentFilePath!, modFilePath).getCode();
+        const newCode = new VueCombinedTagLoader().loadComponent(componentFilePath!, modFilePath).getCode();
         fileHandler.setNewFileContent(newCode);
-        fileHandler.addTemplateComment("Applied " + filePath);
+        fileHandler.addTemplateComment("Applied vue mod " + filePath);
         fileHandler.write();
       }
     });
@@ -90,16 +90,16 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
         if(!initialized) {
           emptyDirSync(options.componentsDir[0]);
           initialized = true;
-          executeMods(withComponent, options.modsDir).forEach(file => this.addWatchFile(file));
           processVueMods(options.localComponentsDir).forEach(file => this.addWatchFile(file));
+          executeMods(withComponent, options.modsDir).forEach(file => this.addWatchFile(file));
         }        
       }
     },
     async handleHotUpdate({ file, server }) {      
       if (file.endsWith('.mod.ts') || file.endsWith('.mod.vue')) {
         emptyDirSync(options.componentsDir[0]);
-        executeMods(withComponent, options.modsDir);
         processVueMods(options.localComponentsDir);
+        executeMods(withComponent, options.modsDir);
       }    
     },
   };

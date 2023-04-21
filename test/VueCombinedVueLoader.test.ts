@@ -1,8 +1,8 @@
 import fs from 'fs';
 import temp from 'temp';
-import CombinedTagLoader from '../src/CombinedTagLoader';
+import { VueCombinedTagLoader } from '../src/VueCombinedTagLoader';
 
-describe('CombinedTagLoader', () => {
+describe('VueCombinedTagLoader', () => {
   let componentSrcPath: string;
   let componentModPath: string;
 
@@ -22,7 +22,7 @@ describe('CombinedTagLoader', () => {
   });
 
   test('should combine script and style tags from component source and mod files', () => {
-    const loader = new CombinedTagLoader();
+    const loader = new VueCombinedTagLoader();
     loader.loadComponent(componentSrcPath, componentModPath);
 
     const result = loader.getCode();
@@ -30,7 +30,7 @@ describe('CombinedTagLoader', () => {
   });
 
   test('should combine style tag in component source with style tag from component mod', () => {
-    const loader = new CombinedTagLoader();
+    const loader = new VueCombinedTagLoader();
     loader.setTag(['style']);
     loader.loadComponent(componentSrcPath, componentModPath);
 
@@ -39,10 +39,10 @@ describe('CombinedTagLoader', () => {
   });
 
   test('should replace style tag in component source with style tag from component mod', () => {
-    const loader = new CombinedTagLoader();
+    const loader = new VueCombinedTagLoader();
     loader.setTag(['style', 'script']);
     const componentModPath2 = temp.path({ suffix: '.vue' });
-    fs.writeFileSync(componentModPath2, '<script>console.log(2);</script><style replace>.test { color: blue; }</style>');
+    fs.writeFileSync(componentModPath2, '<script>console.log(2);</script><style kombinator="replace">.test { color: blue; }</style>');
     loader.loadComponent(componentSrcPath, componentModPath2);
     fs.unlinkSync(componentModPath2);
 
