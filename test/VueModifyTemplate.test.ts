@@ -54,6 +54,13 @@ describe('VueModifyTemplate', () => {
       expect(result).toEqual(template);
     });
 
+    it('finds an element even when attribute name contains special characters', () => {
+      const attributeName = 'v-bind:[class]'
+      const template = `<some-component ${attributeName}="foo"></some-component>`;
+      const result = new VueModifyTemplate().fromTemplate(template).findByAttribute(attributeName).getTemplate();
+      expect(result).toEqual(template);
+    });
+
     it('finds an element by attribute name with no value', () => {
       const template = '<div class="foo" data-qa-info></div>';
       const result = new VueModifyTemplate().fromTemplate(template).findByAttribute('data-qa-info').getTemplate();
@@ -83,6 +90,14 @@ describe('VueModifyTemplate', () => {
     it('finds an element by attribute value', () => {
       const template = '<some-component data-for="money"></some-component>';
       const result = new VueModifyTemplate().fromTemplate(template).findByAttributeValue('data-for', 'money').getTemplate();
+      expect(result).toEqual(template);
+    });
+
+    it('finds an element even when attribute name and value contains special characters', () => {
+      const attributeName = 'v-bind:[class]'
+      const attributeValue = `group-[:nth-of-type(1)_&]:after:content-['*']`
+      const template = `<some-component ${attributeName}="${attributeValue}"></some-component>`;
+      const result = new VueModifyTemplate().fromTemplate(template).findByAttributeValue(attributeName, attributeValue).getTemplate();
       expect(result).toEqual(template);
     });
   
