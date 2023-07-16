@@ -26,10 +26,22 @@ describe('VueModifyTemplate', () => {
       const result = new VueModifyTemplate().fromTemplate(template).findByTag('div').getTemplate();
       expect(result).toEqual(template);
     });
+
+    it('finds a third element by tag name', () => {
+      const template = '<div class="foo"></div><div class="bar"></div><div class="baz"></div>';
+      const result = new VueModifyTemplate().fromTemplate(template).findByTag('div', 2).getTemplate();
+      expect(result).toEqual(template);
+    });
   
     it('finds an self closing component by tag name', () => {
       const template = '<div><comp/></div>';
       const result = new VueModifyTemplate().fromTemplate(template).findByTag('comp').getTemplate();
+      expect(result).toEqual(template);
+    });
+
+    it('finds a second self closing component by tag name', () => {
+      const template = '<div><comp/><comp/></div>';
+      const result = new VueModifyTemplate().fromTemplate(template).findByTag('comp', 1).getTemplate();
       expect(result).toEqual(template);
     });
 
@@ -39,12 +51,23 @@ describe('VueModifyTemplate', () => {
       const result = new VueModifyTemplate().fromTemplate(template).findByTag('div').extendAttribute('class', 'bar').getTemplate();
       expect(result).toEqual(expected);
     });
+
+    it('finds the fourth occurrence of an element by tag name', () => {
+      const template = '<div class="foo"><div class="foo"><div class="foo"><div class="foo"></div></div></div></div>';
+      const expected = '<div class="foo"><div class="foo"><div class="foo"><div class="bar"></div></div></div></div>';
+      const result = new VueModifyTemplate().fromTemplate(template).findByTag('div', 3).regexpAttribute('class', /foo/, 'bar').getTemplate();
+      expect(result).toEqual(expected);
+    });
   
     it('throws an error if no elements match the tag name', () => {
       const template = '<div class="foo"></div>';
       expect(() => new VueModifyTemplate().fromTemplate(template).findByTag('span').getTemplate()).toThrowError('Failed to find element in template.');
     });
-  
+
+    it('throws an error if no elements match the tag index', () => {
+      const template = '<div class="foo"><div class="bar"></div></div>';
+      expect(() => new VueModifyTemplate().fromTemplate(template).findByTag('div', 2).getTemplate()).toThrowError('Failed to find element in template.');
+    });
   });
 
   describe('findByAttribute', () => {

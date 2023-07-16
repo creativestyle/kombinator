@@ -8,8 +8,8 @@ export class VueModifyTemplate extends VueElementFinder {
     return this;
   }
 
-  public findByTag(tagName: string): VueModifyTemplate {
-    super.findByTag(tagName);
+  public findByTag(tagName: string, tagNameIndex: number = 0): VueModifyTemplate {
+    super.findByTag(tagName, tagNameIndex);
     return this;
   }
 

@@ -1,5 +1,6 @@
 type FindByOptions = {
   tagName?: string;
+  tagNameIndex?: number;
   attributeName?: string;
   attributeValue?: string;
 };
@@ -86,9 +87,13 @@ export abstract class VueElementFinder {
     if(!this.findByOptions?.tagName) {
       throw new Error('Invalid find options.');
     }
+    
     const tagName = this.findByOptions.tagName;
-    const regexp = new RegExp(`<${tagName}(?:\\s|\/?>)`);
-    const startIndexMatch = code.match(regexp);
+    const tagNameIndex = this.findByOptions.tagNameIndex ?? 0;
+    const regexp = new RegExp(`<${tagName}(?:\\s|\/?>)`, 'g');
+    const matchArray = Array.from(code.matchAll(regexp));
+    const startIndexMatch = matchArray[tagNameIndex];
+
     if (startIndexMatch?.index !== undefined) {
       const endIndexMatch = code.slice(startIndexMatch.index).match(/>/);
       if (endIndexMatch?.index !== undefined) {
@@ -97,6 +102,7 @@ export abstract class VueElementFinder {
         element = { startIndex, endIndex };
       }
     }
+    
     return element;
   }
 
@@ -141,9 +147,9 @@ export abstract class VueElementFinder {
     return this;
   }
 
-  public findByTag(tagName: string): VueElementFinder {
+  public findByTag(tagName: string, tagNameIndex: number = 0): VueElementFinder {
     this.findBy = 'tagName';
-    this.findByOptions = { tagName };
+    this.findByOptions = { tagName, tagNameIndex };
     return this;
   }
 
