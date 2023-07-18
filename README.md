@@ -23,9 +23,9 @@ Gets the modified template.
 
 Before modifying elements you need to find proper element with simplified selectors.
 
-#### `findByTag(tagName: string)`
+#### `findByTag(tagName: string, tagNameIndex?: number)`
 
-Finds the first element with given tag
+Finds an element with a given tag and a zero-based index. Index is optional.
 
 #### `findByAttribute(name: string)`
 
