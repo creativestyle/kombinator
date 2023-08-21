@@ -1,11 +1,5 @@
 import { VueModifyTemplate } from '../src/VueModifyTemplate';
-
-export function trimMultilineString(str:string, keepLines = true) {
-  return str
-    .split('\n') // Split the string into an array of lines
-    .map((line) => line.trim()) // Trim each line
-    .join(keepLines ? '\n' : ''); // Join the lines back into a string
-}
+import { trimMultilineString } from './helpers';
 
 describe('VueModifyTemplate', () => {
   const template = trimMultilineString(`

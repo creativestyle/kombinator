@@ -5,6 +5,7 @@ import { VueModifyTemplate, AttributeTransformer } from './VueModifyTemplate';
 import { VueFileHandler } from './VueFileHandler';
 import { TemplateMod, getWithComponent } from './helpers';
 import { VueCombinedTagLoader } from './VueCombinedTagLoader'
+import { executeGraphqlMods, GraphqlMod, getWithGraphql, GraphqlFileHandler, GraphqlModificator } from './graphql'
 
 export {
   copyComponents,
@@ -15,5 +16,10 @@ export {
   TemplateMod,
   VueFileHandler,
   getWithComponent,
-  VueCombinedTagLoader
+  VueCombinedTagLoader,
+  executeGraphqlMods,
+  GraphqlMod,
+  getWithGraphql,
+  GraphqlFileHandler,
+  GraphqlModificator
 }

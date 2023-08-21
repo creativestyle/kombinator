@@ -9,7 +9,7 @@ Once the base project and customization layer are created, the tool combines the
 The resulting product is then ready for testing and deployment, either on a local machine or in a production environment. The customization layer can be easily swapped out or modified as needed, allowing for rapid iteration and customization of the underlying Nuxt 3 application.
 
 
-# API - functions you can use in mod files
+# API - VUE - functions you can use in mod files
 
 #### `fromTemplate(template: string)`
 
@@ -156,6 +156,108 @@ console.log(modifiedTemplate);
 //     <p>Hello world</p><p>New element</p>
 //   </section></span><some-component :foo="ok"/>
 // </template>
+```
+
+# API - GRAPHQL - functions you can use in mod files
+
+#### `fromString(content: string)`
+
+Sets the graphql to be modified.
+
+#### `getString(): string`
+
+Gets the modified graphql.
+
+## Finding field
+
+Before modifying graphql you need to find proper field by define its path
+
+#### `findField(fieldPath: string[])`
+
+Finds the field based on path. Each array item is another nested field in graphql file.
+
+## Modification of fields
+
+#### `addFields(fieldsToAdd: string[])`
+
+Adds fields or spread fragments to active field.
+
+#### `removeFields(fieldsToRemove: string[])`
+
+Remove fields or spread fragments to active field.
+
+### Usage
+
+```javascript
+import { GraphqlModificator } from "@creativestyle/kombinator";
+
+const graphql = `
+  query HelloWorld {
+    queryName {
+      field
+    }
+  }
+`;
+
+const gm = new GraphqlModificator();
+gm.fromString(graphql)
+  .findField(['queryName'])
+  .removeFields(['field'])
+  .addFields(['anotherField', '...someFragment']);
+const modifiedTemplate = gm.getString();
+console.log(modifiedTemplate);
+
+// Output: 
+// query HelloWorld {
+//   queryName {
+//     anotherField
+//     ...someFragment
+//   }
+// }
+```
+
+## Modification of variables
+
+#### `addVariable(variableName: string, variableType: string, hardcodedValue: string | null = null)`
+
+Adds variable assigned to a field. Dynamic variable by default. Hardcoded when `hardcodedValue` is provided.
+
+#### `removeVariable(variableName: string)`
+
+Removes variable assigned to a field.
+
+### Usage
+
+```javascript
+import { GraphqlModificator } from "@creativestyle/kombinator";
+
+const graphql = `
+  query HelloWorld {
+    queryName {
+      field (sort: "ASC") {
+        nestedField
+      }
+    }
+  }
+`;
+
+const gm = new GraphqlModificator();
+gm.fromString(graphql)
+  .findField(['queryName', 'field'])
+  .removeVariable('sort')
+  .findField(['queryName', 'field', 'nestedField'])
+  .addVariable('type', 'String')
+const modifiedTemplate = gm.getString();
+console.log(modifiedTemplate);
+
+// Output: 
+// query HelloWorld($type: String) {
+//   queryName {
+//     field {
+//       nestedField(type: $type)
+//     }
+//   }
+// }
 ```
 
 # History associated with the name
