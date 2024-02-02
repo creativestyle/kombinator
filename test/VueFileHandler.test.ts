@@ -27,17 +27,17 @@ describe('VueFileHandler', () => {
   it('should load a Vue file from a given location', () => {
     const vueFile = new VueFileHandler([generatedDir, coreDir]);
     vueFile.loadVueFile('subdirectory/my-component.vue');
-    const templateString = vueFile.getTemplateAsString();
+    const templateString = vueFile.getFileContent();
 
-    expect(templateString).toBe('<div>Hello world</div>');
+    expect(templateString).toBe('<template>\n<div>Hello world</div>\n</template>');
   });
 
   it('should find component by name', () => {
     const vueFile = new VueFileHandler([generatedDir, coreDir]);
     vueFile.loadComponent('my-component');
-    const templateString = vueFile.getTemplateAsString();
+    const templateString = vueFile.getFileContent();
 
-    expect(templateString).toBe('<div>Hello world</div>');
+    expect(templateString).toBe('<template>\n<div>Hello world</div>\n</template>');
   });
 
   it('should find component with dashes and TitleCased file', () => {    
@@ -47,9 +47,9 @@ describe('VueFileHandler', () => {
     fs.writeFileSync(filePath, fileContent, 'utf8');
     const vueFile = new VueFileHandler([generatedDir, coreDir]);
     vueFile.loadComponent('title-cased-component');
-    const templateString = vueFile.getTemplateAsString();
+    const templateString = vueFile.getFileContent();
 
-    expect(templateString).toBe('<div>Hello world</div>');
+    expect(templateString).toBe('<template>\n<div>Hello world</div>\n</template>');
   });
 
   it('should set a new template string', () => {
@@ -60,9 +60,9 @@ describe('VueFileHandler', () => {
     const vueFileOut = new VueFileHandler([generatedDir, coreDir]);
     vueFileOut.loadVueFile('subdirectory/my-component.vue');
     fs.unlinkSync(path.join(generatedDir, 'subdirectory/my-component.vue'));
-    const templateString = vueFileOut.getTemplateAsString();
+    const templateString = vueFileOut.getFileContent();
     
-    expect(templateString).toBe('<div>New template</div>');
+    expect(templateString).toBe('<template>\n<div>New template</div>\n</template>');
   });
 
   it('should add a comment to the template', () => {
@@ -73,9 +73,24 @@ describe('VueFileHandler', () => {
     vueFile.write();
     const vueFileOut = new VueFileHandler([generatedDir, coreDir]);
     vueFileOut.loadVueFile('subdirectory/my-component.vue');
-    const templateString = vueFileOut.getTemplateAsString();
+    const templateString = vueFileOut.getFileContent();
     fs.unlinkSync(path.join(generatedDir, 'subdirectory/my-component.vue'));
-    expect(templateString).toBe('<div>New template</div>\n<!-- Kombinator: This is a comment -->');
+    expect(templateString).toBe('<template>\n<div>New template</div>\n</template><!-- Kombinator: This is a comment -->');
+  });
+
+  it('should add multiple comments to the template, maintaining their order', () => {
+    const vueFile = new VueFileHandler([generatedDir, coreDir]);
+    vueFile.loadVueFile('subdirectory/my-component.vue');
+    vueFile.setNewTemplate('<div>New template</div>');
+    vueFile.addTemplateComment('This is a comment 1');
+    vueFile.addTemplateComment('This is a comment 2');
+    vueFile.addTemplateComment('This is a comment 3');
+    vueFile.write();
+    const vueFileOut = new VueFileHandler([generatedDir, coreDir]);
+    vueFileOut.loadVueFile('subdirectory/my-component.vue');
+    const templateString = vueFileOut.getFileContent();
+    fs.unlinkSync(path.join(generatedDir, 'subdirectory/my-component.vue'));
+    expect(templateString).toBe('<template>\n<div>New template</div>\n</template><!-- Kombinator: This is a comment 1 -->\n<!-- Kombinator: This is a comment 2 -->\n<!-- Kombinator: This is a comment 3 -->');
   });
 
   it('should write the updated file to a new location / name', () => {

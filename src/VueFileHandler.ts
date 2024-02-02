@@ -75,6 +75,10 @@ export class VueFileHandler {
     return this.filePath ? fs.realpathSync(this.filePath) : null;
   }
 
+  getFileContent(): string | null {
+    return this.fileContent ? this.fileContent.trim() : null
+  }
+
   getTemplateAsString(): string {
     const templateMatch = this.fileContent?.match(/<template>([\s\S]*)<\/template>/);
     if (!templateMatch) {
@@ -92,11 +96,11 @@ export class VueFileHandler {
     if(!this.newFileContent) {
       throw new Error("Set new template first");
     }
-    const templateMatch = this.newFileContent?.match(/<template>([\s\S]*)<\/template>/);
+    const templateMatch = this.newFileContent?.match(/<template>[\s\S]*<\/template>(?:\s*<!-- Kombinator: [\s\S]*? -->)*\n?/);
     if (!templateMatch) {
       throw new Error(`No template found in ${this.filePath}`);
     }
-    const templateContent = templateMatch[1];
+    const templateContent = templateMatch[0];
     const newTemplateContent = templateContent + `<!-- Kombinator: ${comment} -->\n`;
     this.newFileContent = this.newFileContent.replace(templateContent, newTemplateContent);
     return this;
