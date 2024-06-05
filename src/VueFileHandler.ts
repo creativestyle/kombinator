@@ -125,5 +125,3 @@ export class VueFileHandler {
     fs.writeFileSync(newFile, newFileContent!);
   }
 }
-
-export default VueFileHandler;

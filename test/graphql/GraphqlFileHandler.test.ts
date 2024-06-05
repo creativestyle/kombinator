@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import temp from 'temp';
-import GraphqlFileHandler from '../../src/graphql/GraphqlFileHandler';
+import { GraphqlFileHandler } from '../../src/graphql/GraphqlFileHandler';
 
 temp.track(); // Automatically track and clean up files at exit
 

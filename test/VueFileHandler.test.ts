@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import temp from 'temp';
-import VueFileHandler from '../src/VueFileHandler';
+import { VueFileHandler } from '../src/VueFileHandler';
 
 temp.track(); // Automatically track and clean up files at exit
 

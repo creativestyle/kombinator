@@ -112,5 +112,3 @@ export class GraphqlFileHandler {
     fs.writeFileSync(newFile, newFileContent!);
   }
 }
-
-export default GraphqlFileHandler;
